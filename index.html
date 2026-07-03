@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zouk — Customer Intelligence Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14151F;
+    --ink-soft:#1E2030;
+    --ink-softer:#2A2C42;
+    --paper:#F1EAD6;
+    --paper-dim:#E7DDC2;
+    --paper-line:#D8CBA6;
+    --peacock:#1F6F78;
+    --peacock-light:#4A9CA5;
+    --peacock-pale:#DCEBEA;
+    --marigold:#E3A230;
+    --marigold-pale:#F7E7C4;
+    --madder:#B8432E;
+    --madder-light:#D6664E;
+    --madder-pale:#F3DCD3;
+    --thread:#6B6455;
+    --thread-light:#9A927C;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  ::selection{background:var(--marigold);color:var(--ink);}
+
+  .dossier{max-width:1080px;margin:0 auto;padding:0 28px 80px;}
+
+  /* ---------- MASTHEAD ---------- */
+  .masthead{
+    padding:52px 0 30px;
+    border-bottom:1px solid var(--ink-softer);
+    position:relative;
+  }
+  .eyebrow-row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    color:var(--peacock-light);text-transform:uppercase;margin-bottom:22px;
+    flex-wrap:wrap;gap:8px;
+  }
+  .eyebrow-row .doc-id{color:var(--thread-light);}
+  h1.title{
+    font-family:var(--serif);
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(30px,4.4vw,50px);
+    line-height:1.08;
+    margin:0 0 18px;
+    color:var(--paper);
+    max-width:15ch;
+    letter-spacing:-0.01em;
+  }
+  h1.title em{
+    font-style:italic;
+    color:var(--marigold);
+  }
+  .meta-line{
+    font-family:var(--mono);font-size:12.5px;color:var(--thread-light);
+    display:flex;flex-wrap:wrap;gap:6px 22px;
+  }
+  .meta-line b{color:var(--paper-dim);font-weight:600;}
+
+  /* ---------- TABS ---------- */
+  .tabs{
+    display:flex;gap:6px;margin:28px 0 0;padding-top:22px;flex-wrap:wrap;
+  }
+  .tab-btn{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;
+    background:transparent;border:1px solid var(--ink-softer);
+    color:var(--thread-light);padding:10px 18px;border-radius:3px 3px 0 0;
+    cursor:pointer;transition:all .15s ease;position:relative;top:1px;
+  }
+  .tab-btn .n{color:var(--madder-light);margin-right:7px;}
+  .tab-btn:hover{color:var(--paper);border-color:var(--thread);}
+  .tab-btn.active{
+    background:var(--ink-soft);color:var(--paper);
+    border-color:var(--ink-softer);border-bottom-color:var(--ink-soft);
+  }
+  .tab-btn.active .n{color:var(--marigold);}
+  main{
+    background:var(--ink-soft);border:1px solid var(--ink-softer);
+    border-radius:0 6px 6px 6px;padding:40px 36px 44px;
+  }
+  .panel{display:none;animation:fade .35s ease;}
+  .panel.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  h2.panel-title{
+    font-family:var(--serif);font-weight:600;font-size:26px;
+    margin:0 0 6px;color:var(--paper);
+  }
+  .panel-sub{
+    font-family:var(--sans);font-size:14.5px;color:var(--thread-light);
+    margin:0 0 32px;max-width:62ch;
+  }
+
+  /* ---------- STAT CHIPS ---------- */
+  .chips{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:38px;
+  }
+  .chip{
+    background:var(--ink);border:1px solid var(--ink-softer);
+    border-radius:5px;padding:18px 16px;
+  }
+  .chip .num{
+    font-family:var(--serif);font-size:30px;font-weight:600;color:var(--paper);
+    display:block;line-height:1;margin-bottom:8px;
+  }
+  .chip .num.alert{color:var(--madder-light);}
+  .chip .num.good{color:var(--peacock-light);}
+  .chip .label{font-size:12.5px;color:var(--thread-light);line-height:1.35;}
+
+  /* ---------- THREAD CHART ---------- */
+  .thread-wrap{
+    background:var(--ink);border:1px solid var(--ink-softer);border-radius:6px;
+    padding:26px 26px 16px;margin-bottom:34px;
+  }
+  .thread-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;flex-wrap:wrap;gap:10px;}
+  .thread-head h3{font-family:var(--serif);font-size:17px;font-weight:600;margin:0;color:var(--paper);}
+  .thread-legend{font-family:var(--mono);font-size:11px;color:var(--thread-light);display:flex;gap:16px;flex-wrap:wrap;}
+  .thread-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  #chartTooltip{
+    position:absolute;pointer-events:none;background:var(--ink);border:1px solid var(--peacock);
+    border-radius:4px;padding:8px 11px;font-family:var(--mono);font-size:11.5px;color:var(--paper);
+    opacity:0;transition:opacity .12s;white-space:nowrap;z-index:10;
+  }
+  .chart-svg-holder{position:relative;}
+
+  .thesis{
+    font-family:var(--serif);font-size:19px;line-height:1.6;color:var(--paper-dim);
+    max-width:66ch;margin:0 0 30px;font-weight:400;
+  }
+  .thesis b{color:var(--marigold);font-weight:600;}
+
+  .callout{
+    border-left:3px solid var(--madder);background:var(--madder-pale);
+    border-radius:0 5px 5px 0;padding:18px 22px;margin:0 0 8px;
+  }
+  .callout p{margin:0 0 10px;color:var(--ink);font-size:14px;line-height:1.6;}
+  .callout p:last-child{margin-bottom:0;}
+  .callout .callout-label{
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--madder);font-weight:600;margin-bottom:8px;display:block;
+  }
+  .sources{
+    font-family:var(--mono);font-size:10.5px;color:var(--thread);margin-top:14px;line-height:1.7;
+  }
+  .sources a{color:var(--thread-light);}
+
+  /* ---------- PARETO BARS ---------- */
+  .pareto{margin-bottom:30px;}
+  .pareto-row{margin-bottom:13px;}
+  .pareto-label-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
+  .pareto-label-row .cat-name{color:var(--paper-dim);font-weight:500;}
+  .pareto-label-row .cat-pct{font-family:var(--mono);color:var(--thread-light);}
+  .pareto-track{background:var(--ink);border-radius:3px;height:22px;overflow:hidden;border:1px solid var(--ink-softer);}
+  .pareto-fill{height:100%;border-radius:2px;transition:width 1s cubic-bezier(.2,.8,.2,1);}
+
+  .two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:start;}
+  @media(max-width:760px){.two-col{grid-template-columns:1fr;}}
+
+  .mini-title{
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--peacock-light);margin:0 0 16px;font-weight:600;
+  }
+
+  .window-box{
+    background:var(--ink);border:1px solid var(--ink-softer);border-radius:6px;padding:22px;
+  }
+  .window-box .wbig{font-family:var(--serif);font-size:15px;color:var(--paper-dim);line-height:1.55;margin-bottom:16px;}
+  .window-box .wbig b{color:var(--marigold);}
+  .tie-row{display:flex;gap:10px;margin-bottom:10px;align-items:center;}
+  .tie-bar-outer{flex:1;background:var(--ink-soft);border-radius:3px;height:14px;overflow:hidden;}
+  .tie-bar-inner{height:100%;}
+  .tie-label{font-family:var(--mono);font-size:11px;color:var(--thread-light);width:80px;flex-shrink:0;}
+  .tie-pct{font-family:var(--mono);font-size:11px;color:var(--paper-dim);width:34px;text-align:right;flex-shrink:0;}
+
+  /* ---------- VOICE OF CUSTOMER ---------- */
+  .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+  .filter-chip{
+    font-family:var(--mono);font-size:11.5px;padding:7px 14px;border-radius:20px;
+    border:1px solid var(--ink-softer);background:transparent;color:var(--thread-light);cursor:pointer;
+    transition:all .15s;
+  }
+  .filter-chip:hover{border-color:var(--thread);color:var(--paper);}
+  .filter-chip.active{background:var(--peacock);border-color:var(--peacock);color:var(--paper);}
+  .voc-count{font-family:var(--mono);font-size:12px;color:var(--thread-light);margin-bottom:16px;}
+  .voc-list{display:flex;flex-direction:column;gap:10px;}
+  .voc-card{
+    background:var(--ink);border:1px solid var(--ink-softer);border-radius:6px;
+    padding:15px 18px;display:flex;gap:16px;align-items:flex-start;
+  }
+  .voc-sentiment{
+    width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0;
+  }
+  .voc-body{flex:1;min-width:0;}
+  .voc-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:5px;flex-wrap:wrap;}
+  .voc-name{font-weight:600;font-size:13.5px;color:var(--paper-dim);}
+  .voc-date{font-family:var(--mono);font-size:11px;color:var(--thread);margin-left:8px;}
+  .voc-helpful{font-family:var(--mono);font-size:11px;color:var(--marigold);white-space:nowrap;}
+  .voc-note{font-size:13.5px;color:var(--thread-light);line-height:1.5;}
+  .voc-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+  .voc-tag{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;padding:2px 7px;border-radius:10px;
+    background:var(--ink-softer);color:var(--thread-light);text-transform:uppercase;
+  }
+
+  /* ---------- RECOMMENDATIONS ---------- */
+  .rec-list{display:flex;flex-direction:column;gap:16px;}
+  .rec-card{
+    background:var(--ink);border:1px solid var(--ink-softer);border-radius:7px;
+    padding:22px 24px;display:grid;grid-template-columns:44px 1fr;gap:18px;
+  }
+  .rec-num{
+    font-family:var(--serif);font-size:26px;font-weight:600;color:var(--ink-softer);
+    -webkit-text-stroke:1px var(--peacock-light);
+  }
+  .rec-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;flex-wrap:wrap;}
+  .rec-title{font-family:var(--serif);font-size:17.5px;font-weight:600;color:var(--paper);}
+  .rec-tags{display:flex;gap:6px;flex-shrink:0;}
+  .tag-pill{font-family:var(--mono);font-size:10px;padding:3px 9px;border-radius:10px;letter-spacing:.03em;}
+  .tag-impact-high{background:var(--madder-pale);color:var(--madder);}
+  .tag-impact-med{background:var(--marigold-pale);color:#8a6413;}
+  .tag-effort-low{background:var(--peacock-pale);color:var(--peacock);}
+  .tag-effort-med{background:var(--ink-softer);color:var(--thread-light);}
+  .rec-evidence{
+    font-size:12.5px;color:var(--thread-light);margin-bottom:9px;line-height:1.55;
+    border-left:2px solid var(--ink-softer);padding-left:10px;
+  }
+  .rec-evidence b{color:var(--peacock-light);font-weight:600;}
+  .rec-action{font-size:14px;color:var(--paper-dim);line-height:1.55;}
+
+  footer.note{
+    margin-top:30px;font-family:var(--mono);font-size:11px;color:var(--thread);
+    text-align:center;padding-top:24px;
+  }
+
+  @media(max-width:700px){
+    .chips{grid-template-columns:repeat(2,1fr);}
+    main{padding:28px 18px 32px;}
+    .rec-card{grid-template-columns:1fr;}
+    .rec-num{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="dossier">
+
+  <div class="masthead">
+    <div class="eyebrow-row">
+      <span>Customer Intelligence Brief</span>
+      <span class="doc-id">Ref. ZK-CX-0726</span>
+    </div>
+    <h1 class="title">Where Zouk is losing customers — <em>and where it isn't</em></h1>
+    <div class="meta-line">
+      <span><b>Source</b> 98 Play Store reviews, Dec 2025–Jun 2026</span>
+      <span><b>Filed</b> 2 Jul 2026</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="overview"><span class="n">01</span>Overview</button>
+    <button class="tab-btn" data-tab="issues"><span class="n">02</span>Issue Breakdown</button>
+    <button class="tab-btn" data-tab="voice"><span class="n">03</span>Voice of Customer</button>
+    <button class="tab-btn" data-tab="recs"><span class="n">04</span>Recommendations</button>
+  </div>
+
+  <main>
+
+    <!-- ===================== TAB 1: OVERVIEW ===================== -->
+    <section class="panel active" id="panel-overview">
+      <h2 class="panel-title">The reviews are split down the middle. The trend line isn't.</h2>
+      <p class="panel-sub">Sentiment across seven months, tracked month by month from the full set of 98 reviews.</p>
+
+      <div class="chips" id="statChips"></div>
+
+      <div class="thread-wrap">
+        <div class="thread-head">
+          <h3>Share of negative reviews, by month</h3>
+          <div class="thread-legend">
+            <span><span class="dot" style="background:var(--peacock-light)"></span>Dec–Mar baseline</span>
+            <span><span class="dot" style="background:var(--madder-light)"></span>Apr–Jun</span>
+          </div>
+        </div>
+        <div class="chart-svg-holder">
+          <svg id="threadChart" viewBox="0 0 940 260" style="width:100%;height:auto;overflow:visible;"></svg>
+          <div id="chartTooltip"></div>
+        </div>
+      </div>
+
+      <p class="thesis">The product isn't the problem — <b>quality and craftsmanship are the most-praised, most-upvoted themes in the dataset.</b> What's breaking is everything after checkout: delivery reliability, and even more consistently, how support responds once delivery fails.</p>
+
+      <div class="callout">
+        <span class="callout-label">Why the timing matters</span>
+        <p>Zouk went live on Myntra's M-Now quick-commerce program in April 2026, leaning into gifting and last-minute, occasion-led purchases as a growth story — the same month this dataset's negative sentiment begins its climb, driven substantially by delayed gifts and expedited-delivery promises that reviewers say weren't honored on Zouk's own channels.</p>
+        <p>Zouk is also currently raising a pre-Series C round, with FY26 financials not yet public. Neither fact is necessarily connected to the other — but both raise the stakes on fixing fulfillment and support before the speed-and-gifting promise gets pushed harder.</p>
+        <div class="sources">SOURCES — YourStory, "How Myntra's M-Now is accelerating growth" (Apr 2026) · Indian Retailer &amp; Entrackr, Zouk pre-Series C coverage (Jun 2026) · BW Disrupt, Zouk co-founder interview on FY26 targets</div>
+      </div>
+    </section>
+
+    <!-- ===================== TAB 2: ISSUE BREAKDOWN ===================== -->
+    <section class="panel" id="panel-issues">
+      <h2 class="panel-title">Support response outranks delivery delay itself</h2>
+      <p class="panel-sub">Categories tagged across all 48 negative/mixed reviews. A single review can raise more than one issue.</p>
+
+      <div class="two-col">
+        <div>
+          <p class="mini-title">Issue frequency — all negative reviews (n=48)</p>
+          <div class="pareto" id="paretoIssues"></div>
+        </div>
+        <div>
+          <p class="mini-title">What's working — positive reviews (n=50)</p>
+          <div class="pareto" id="paretoPositive"></div>
+        </div>
+      </div>
+
+      <div class="window-box" style="margin-top:8px;">
+        <p class="wbig">In the most recent quarter (Apr–Jun 2026), delivery and support are no longer two separate problems — each is tied at <b>50% individually</b>, and together at least one of the two now appears in <b>77% of negative reviews</b>, up from 50% in the Dec–Mar baseline.</p>
+        <div id="tieRows"></div>
+      </div>
+    </section>
+
+    <!-- ===================== TAB 3: VOICE OF CUSTOMER ===================== -->
+    <section class="panel" id="panel-voice">
+      <h2 class="panel-title">Voice of customer</h2>
+      <p class="panel-sub">All 98 reviews, paraphrased and tagged. Sorted by how many other shoppers marked them helpful — a rough proxy for how widely each experience resonates.</p>
+
+      <div class="filter-row" id="filterRow"></div>
+      <div class="voc-count" id="vocCount"></div>
+      <div class="voc-list" id="vocList"></div>
+    </section>
+
+    <!-- ===================== TAB 4: RECOMMENDATIONS ===================== -->
+    <section class="panel" id="panel-recs">
+      <h2 class="panel-title">Five fixes, ranked by leverage</h2>
+      <p class="panel-sub">Ranked by evidence weight in this dataset, not by ease of building — though most of these are cheaper than the churn they're currently causing.</p>
+
+      <div class="rec-list" id="recList"></div>
+    </section>
+
+  </main>
+
+  <footer class="note">Compiled from publicly posted Play Store reviews · Analysis and categorisation independent of Zouk</footer>
+</div>
+
+<script>
+const REVIEWS = [{"name":"Eldhose Nellickal","date":"2026-06-30","sentiment":"neg","cats":["SHIP","SUPPORT"],"helpful":0,"respDays":0,"note":"Gift order missed delivery date with zero dispatch updates or tracking"},{"name":"Lakshmi Madhesh","date":"2026-06-21","sentiment":"neg","cats":["SHIP","REFUND","SUPPORT"],"helpful":1,"respDays":2,"note":"Order delayed 20+ days, cancelled, refund still unpaid weeks later"},{"name":"Shubh Sharma","date":"2026-06-19","sentiment":"neg","cats":["SHIP"],"helpful":1,"respDays":0,"note":"Wife's birthday gift order marked unavailable three days after purchase"},{"name":"LORNA DAS","date":"2026-06-19","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Liked the collection"},{"name":"keerti lavanya","date":"2026-06-19","sentiment":"neg","cats":["SUPPORT","TECH"],"helpful":1,"respDays":3,"note":"App called slow and unresponsive, no reply from support"},{"name":"Manasa Modalavalasa","date":"2026-06-18","sentiment":"neg","cats":["TECH","SUPPORT"],"helpful":2,"respDays":1,"note":"Order missing from history, bot support couldn't match order to account"},{"name":"Ankita Biswal","date":"2026-06-17","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Wonderful overall experience"},{"name":"Sahana BM","date":"2026-06-17","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":0,"note":"Praised collection variety and build quality"},{"name":"Garima Pathak","date":"2026-06-17","sentiment":"neg","cats":["SUPPORT","STATUS"],"helpful":1,"respDays":0,"note":"No live chat, repetitive order-ID entry, disputes delivery status shown"},{"name":"Samina Shaikh","date":"2026-06-14","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":1,"note":"Praised product and service quality"},{"name":"POOJA SAHANI","date":"2026-06-13","sentiment":"neg","cats":["SHIP","SUPPORT"],"helpful":1,"respDays":0,"note":"Repeated 'today/tomorrow' promises with no delivery for weeks"},{"name":"vibha moger","date":"2026-06-10","sentiment":"neg","cats":["SHIP"],"helpful":1,"respDays":1,"note":"11 days with no delivery, suggested using Amazon instead"},{"name":"Rohit G","date":"2026-06-07","sentiment":"neg","cats":["TECH"],"helpful":0,"respDays":1,"note":"OTP login flow broken, can't access account"},{"name":"Arpita Dubey","date":"2026-06-06","sentiment":"neg","cats":["ACCURACY"],"helpful":1,"respDays":2,"note":"Received a lower-priced bag than the one ordered"},{"name":"Ayush Kumar Sinha","date":"2026-06-06","sentiment":"pos","cats":["POS_UX","POS_QUALITY"],"helpful":4,"respDays":2,"note":"Praised app usability and bag designs"},{"name":"Abhishek","date":"2026-06-04","sentiment":"neg","cats":["QUALITY"],"helpful":1,"respDays":1,"note":"Package arrived with a used mask and lab report inside, bag scratched"},{"name":"Tripti Garg","date":"2026-06-04","sentiment":"pos","cats":["POS_QUALITY","POS_UX"],"helpful":0,"respDays":0,"note":"Praised quality and smooth app experience"},{"name":"Mirdhini Saisaravanan","date":"2026-05-29","sentiment":"neg","cats":["ACCURACY"],"helpful":1,"respDays":1,"note":"Wrong prints delivered online despite good past in-store purchases"},{"name":"SOMYA Jha","date":"2026-05-29","sentiment":"neg","cats":["SHIP","REFUND"],"helpful":1,"respDays":null,"note":"Marked delivered but never arrived, refund unpaid, no response"},{"name":"Trishala Trishi","date":"2026-05-28","sentiment":"neg","cats":["SHIP"],"helpful":1,"respDays":1,"note":"No status update on a prepaid order"},{"name":"divya padala","date":"2026-05-25","sentiment":"neg","cats":["QUALITY"],"helpful":1,"respDays":1,"note":"Called bag quality not worth the price"},{"name":"Sushma D.k","date":"2026-05-13","sentiment":"neg","cats":["SHIP"],"helpful":1,"respDays":2,"note":"Paid for 2-day delivery, still not delivered after 10 days"},{"name":"Vinayak Ekbote","date":"2026-05-11","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Loved the product"},{"name":"Melvin raj","date":"2026-05-09","sentiment":"neg","cats":["SHIP","SUPPORT"],"helpful":1,"respDays":2,"note":"25 days with no delivery and unresponsive support"},{"name":"Rupali Nimbalkar","date":"2026-05-08","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Good experience"},{"name":"Ananya Sharma","date":"2026-05-06","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Called it one of the best recent purchases"},{"name":"Aravinda Das","date":"2026-05-06","sentiment":"neg","cats":["SHIP"],"helpful":1,"respDays":5,"note":"Paid extra for 1-day delivery, order took a full week"},{"name":"Isha Anushka Rout","date":"2026-05-05","sentiment":"neg","cats":["REFUND","SUPPORT"],"helpful":1,"respDays":0,"note":"Strong dissatisfaction over refund delay and unread emails"},{"name":"Rizwan khan","date":"2026-05-04","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Excellent experience"},{"name":"Anamika Pareek","date":"2026-05-04","sentiment":"neg","cats":["SHIP","SUPPORT"],"helpful":1,"respDays":0,"note":"Money deducted, order never arrived, no resolution offered"},{"name":"Shrutika Mali","date":"2026-04-30","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":null,"note":"Praised design, quality and comfort"},{"name":"harsha chilakalapudi","date":"2026-04-26","sentiment":"neg","cats":["SHIP","SUPPORT"],"helpful":3,"respDays":2,"note":"Paid for fast delivery, alternate number given, still no update"},{"name":"Prakhar Agarwal","date":"2026-04-22","sentiment":"neg","cats":["QUALITY","REFUND"],"helpful":3,"respDays":2,"note":"Flagged low product quality and a poor return process"},{"name":"SAKSHAM GOSWAMI","date":"2026-04-21","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":0,"note":"Praised colours and quality"},{"name":"Kokila Kothari","date":"2026-04-18","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":3,"note":"Called it a great buy"},{"name":"Shivani Mathuriya","date":"2026-04-17","sentiment":"neg","cats":["SHIP"],"helpful":0,"respDays":4,"note":"Second consecutive delivery delay on an order"},{"name":"sunita jaswal","date":"2026-04-16","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Positive shoutout to the brand"},{"name":"Prabir Bar","date":"2026-04-12","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Simple positive note"},{"name":"Chitra Majumder","date":"2026-04-10","sentiment":"neg","cats":["REFUND","SUPPORT"],"helpful":1,"respDays":1,"note":"Wanted a return, said live chat messages went unanswered"},{"name":"vindhya shetty","date":"2026-04-07","sentiment":"neg","cats":["SUPPORT"],"helpful":3,"respDays":0,"note":"Called communication and service poor"},{"name":"Harvinder Kaur","date":"2026-04-03","sentiment":"neg","cats":["ACCURACY","SUPPORT"],"helpful":1,"respDays":4,"note":"Received one of three items ordered, called support experience a scam"},{"name":"Sukanta Adhikari","date":"2026-03-31","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Good experience"},{"name":"urbashi das","date":"2026-03-25","sentiment":"neg","cats":["SHIP","REFUND"],"helpful":1,"respDays":0,"note":"Parcel never delivered and no refund issued"},{"name":"GIL GAMESH","date":"2026-03-24","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":0,"note":"Called it a favourite bag"},{"name":"Siddhi Mane","date":"2026-03-23","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Positive reaction, no detail"},{"name":"Jagruti Patel","date":"2026-03-16","sentiment":"neg","cats":["STATUS","SUPPORT"],"helpful":5,"respDays":0,"note":"Marked delivered but parcel never received, no support follow-up yet"},{"name":"Tatheer Fathima","date":"2026-03-14","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":2,"note":"Happy with the products"},{"name":"Aiswarya Vijayan","date":"2026-03-13","sentiment":"pos","cats":["POS_QUALITY"],"helpful":9,"respDays":3,"note":"Two-year customer, praised durability, design and everyday usability in detail"},{"name":"Geeta ambekar","date":"2026-03-13","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":3,"note":"Simple positive note"},{"name":"Ankita Kumari","date":"2026-03-09","sentiment":"neg","cats":["DARKPATTERN"],"helpful":0,"respDays":1,"note":"Flagged that cancelling an order requires email while checkout is instant"},{"name":"Rajvi Rupapara","date":"2026-03-08","sentiment":"neg","cats":["TECH"],"helpful":2,"respDays":1,"note":"Cross-device login created conflicting linked emails, locked out of account"},{"name":"Shailja Abhishek Singh","date":"2026-03-08","sentiment":"mixed","cats":["POS_QUALITY","PAYMENT"],"helpful":1,"respDays":3,"note":"Praised 2-year bag durability, flagged repeated payment declines on spouse's card"},{"name":"Moumita Sadhukhan","date":"2026-03-07","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":2,"note":"Praised the product"},{"name":"Dinesh Kumar","date":"2026-03-07","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":2,"note":"Simple positive note"},{"name":"Sadaf Sajad","date":"2026-03-07","sentiment":"neg","cats":["SHIP","SUPPORT"],"helpful":8,"respDays":2,"note":"Delivery pushed back for months, forced into repeated substitutions, then went unavailable again"},{"name":"anushya j","date":"2026-03-05","sentiment":"pos","cats":["POS_UX"],"helpful":0,"respDays":1,"note":"Called the app easy to use"},{"name":"S Sneha","date":"2026-03-01","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Simple positive note"},{"name":"Mahi Mmm","date":"2026-03-01","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":1,"note":"Praised product quality"},{"name":"Sreedevi Mallishetty","date":"2026-02-28","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":2,"note":"Called the experience excellent"},{"name":"Atul Thaware","date":"2026-02-27","sentiment":"neg","cats":["SHIP","REFUND"],"helpful":4,"respDays":3,"note":"10 days with no delivery attempt, forced to cancel, refund timeline unclear"},{"name":"Bhargav","date":"2026-02-23","sentiment":"neg","cats":["TECH"],"helpful":0,"respDays":1,"note":"Reported login issues and delayed order visibility in the app"},{"name":"Maan Fashion","date":"2026-02-22","sentiment":"neg","cats":["QUALITY","SUPPORT"],"helpful":1,"respDays":1,"note":"Gift bag's threads came apart after a month, complaint went unaddressed"},{"name":"Shrabani Palai","date":"2026-02-21","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":2,"note":"Called the bags classy and statement-worthy"},{"name":"paviii","date":"2026-02-18","sentiment":"neg","cats":["SHIP","REFUND"],"helpful":3,"respDays":5,"note":"Told item was out of stock only after chasing, then order cancelled anyway"},{"name":"sai nani","date":"2026-02-16","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":2,"note":"Simple positive note"},{"name":"Shaila Dsouza","date":"2026-02-13","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Simple positive note"},{"name":"Jasvinder Singh","date":"2026-02-12","sentiment":"pos","cats":["POS_UX"],"helpful":13,"respDays":1,"note":"Detailed praise for smooth browsing, accurate listings and timely order updates"},{"name":"Radhika Tp","date":"2026-02-09","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":2,"note":"Positive experience"},{"name":"Nancy Priyadharshini","date":"2026-02-09","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":2,"note":"Simple positive note"},{"name":"gorishankar dudi","date":"2026-02-09","sentiment":"neg","cats":["TECH"],"helpful":1,"respDays":0,"note":"Unclear complaint, appears dissatisfied with the app"},{"name":"Lalee8773 Arushi","date":"2026-02-08","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Simple positive note"},{"name":"shubhankar choudhary","date":"2026-02-07","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":2,"note":"Praised the product"},{"name":"Dipanjana Kusary","date":"2026-01-30","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":1,"note":"Repeat gifting customer, praised tote quality for two purchases"},{"name":"ANOOP V","date":"2026-01-28","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Simple positive note"},{"name":"Roshni Verma","date":"2026-01-27","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Called the experience awesome"},{"name":"Nagratna Patil","date":"2026-01-26","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Good experience"},{"name":"Ketaki Talathi","date":"2026-01-22","sentiment":"pos","cats":["POS_QUALITY"],"helpful":5,"respDays":1,"note":"Detailed praise for pattern detail and material quality"},{"name":"Vaishali Chaudhari","date":"2026-01-22","sentiment":"neg","cats":["PRICE"],"helpful":0,"respDays":0,"note":"Felt pricing was too high"},{"name":"Khalid Raja","date":"2026-01-21","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":1,"note":"Called the experience amazing"},{"name":"Kapilavai Rohitha","date":"2026-01-19","sentiment":"neg","cats":["PAYMENT"],"helpful":0,"respDays":0,"note":"Payment deducted without an order being placed"},{"name":"Khurshid Ansari","date":"2026-01-16","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Called the app nice"},{"name":"JOYAL P JOSEPH","date":"2026-01-14","sentiment":"neg","cats":["COVERAGE"],"helpful":0,"respDays":0,"note":"Noted service isn't available in many locations"},{"name":"Kanaga lakshmi Murugesan","date":"2026-01-13","sentiment":"neg","cats":["REFUND","ACCURACY"],"helpful":0,"respDays":0,"note":"Wanted the same bag replaced, received a gift card instead"},{"name":"Jeevitha K","date":"2026-01-12","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Positive note"},{"name":"Bimla Richard","date":"2026-01-11","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":1,"note":"Praised the bags"},{"name":"Shadrach Monison","date":"2026-01-09","sentiment":"neg","cats":["SUPPORT"],"helpful":1,"respDays":0,"note":"Accused the app of making false promises"},{"name":"Nayee Riddhi","date":"2026-01-08","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Neutral short note"},{"name":"Kanta Rana","date":"2026-01-08","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":0,"note":"Praised quality"},{"name":"Praharshitha Ch","date":"2026-01-07","sentiment":"neg","cats":["PAYMENT","SUPPORT"],"helpful":0,"respDays":1,"note":"Payment charged three times with no order update for two days"},{"name":"N K","date":"2026-01-07","sentiment":"neg","cats":["ACCURACY","SUPPORT"],"helpful":4,"respDays":12,"note":"Items missing from order, no response for an extended period"},{"name":"Sandhvi Singh","date":"2026-01-06","sentiment":"neg","cats":["REFUND","PRICE"],"helpful":3,"respDays":0,"note":"Disliked the style, refund declined under discount-item policy"},{"name":"Malligam Malligam","date":"2026-01-03","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":2,"note":"Positive exclamation"},{"name":"Shabaree Krishna Das","date":"2026-01-03","sentiment":"neg","cats":["SHIP","SUPPORT"],"helpful":6,"respDays":2,"note":"Order delayed past the event it was needed for, bot-only support"},{"name":"Sandhya Rajendran","date":"2026-01-02","sentiment":"neg","cats":["STATUS","SHIP","REFUND"],"helpful":6,"respDays":3,"note":"Tracking incorrectly showed 'returned', two bags undelivered, refund unclear"},{"name":"gousia hamid","date":"2025-12-31","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":2,"note":"Praised the collection"},{"name":"Rita Das","date":"2025-12-31","sentiment":"neg","cats":["TECH"],"helpful":0,"respDays":0,"note":"Reported minor app bugginess"},{"name":"Shadow Armour","date":"2025-12-30","sentiment":"pos","cats":["POS_QUALITY"],"helpful":0,"respDays":1,"note":"Praised sustainable, stylish positioning"},{"name":"Rakesh Kumar","date":"2025-12-29","sentiment":"pos","cats":["POS_GENERAL"],"helpful":0,"respDays":0,"note":"Positive shoutout"}];
+
+const CAT_META = {
+  SHIP:{label:"Delivery delay",color:"var(--madder-light)"},
+  SUPPORT:{label:"Support unresponsive",color:"var(--madder)"},
+  REFUND:{label:"Refund / cancellation",color:"#C77A52"},
+  TECH:{label:"App / account bug",color:"#9C7A9E"},
+  ACCURACY:{label:"Wrong / missing item",color:"#B08D3E"},
+  QUALITY:{label:"Product quality",color:"#7A8C6E"},
+  STATUS:{label:"False tracking status",color:"#6E8CA0"},
+  PAYMENT:{label:"Payment failure",color:"#A0728C"},
+  PRICE:{label:"Pricing",color:"#8C8060"},
+  DARKPATTERN:{label:"Cancellation friction",color:"#B85C7A"},
+  COVERAGE:{label:"Service coverage",color:"#6E8060"},
+  POS_QUALITY:{label:"Product quality",color:"var(--peacock-light)"},
+  POS_UX:{label:"App / site usability",color:"var(--marigold)"},
+  POS_GENERAL:{label:"General praise",color:"var(--thread-light)"}
+};
+const ISSUE_CATS = ["SHIP","SUPPORT","REFUND","TECH","ACCURACY","QUALITY","STATUS","PAYMENT","PRICE","DARKPATTERN","COVERAGE"];
+const POS_CATS = ["POS_QUALITY","POS_UX","POS_GENERAL"];
+
+function monthLabel(m){
+  const [y,mo] = m.split("-");
+  const names = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return names[parseInt(mo,10)-1] + " " + y.slice(2);
+}
+
+function computeStats(){
+  const total = REVIEWS.length;
+  const pos = REVIEWS.filter(r=>r.sentiment==="pos").length;
+  const neg = REVIEWS.filter(r=>r.sentiment==="neg").length;
+  const mixed = REVIEWS.filter(r=>r.sentiment==="mixed").length;
+
+  const monthMap = {};
+  REVIEWS.forEach(r=>{
+    const m = r.date.slice(0,7);
+    if(!monthMap[m]) monthMap[m]={pos:0,neg:0,mixed:0,total:0};
+    monthMap[m][r.sentiment]++;
+    monthMap[m].total++;
+  });
+  const months = Object.keys(monthMap).sort();
+  const trend = months.map(m=>{
+    const d = monthMap[m];
+    const negPct = (d.neg+d.mixed)/d.total*100;
+    return {month:m,label:monthLabel(m),negPct,total:d.total,neg:d.neg,pos:d.pos};
+  });
+
+  const negOrMixed = REVIEWS.filter(r=>r.sentiment==="neg"||r.sentiment==="mixed");
+  const catCounts = {};
+  ISSUE_CATS.forEach(c=>catCounts[c]=0);
+  negOrMixed.forEach(r=>r.cats.forEach(c=>{ if(catCounts.hasOwnProperty(c)) catCounts[c]++; }));
+
+  const posReviews = REVIEWS.filter(r=>r.sentiment==="pos");
+  const posCatCounts = {};
+  POS_CATS.forEach(c=>posCatCounts[c]=0);
+  posReviews.forEach(r=>r.cats.forEach(c=>{ if(posCatCounts.hasOwnProperty(c)) posCatCounts[c]++; }));
+
+  const responded = REVIEWS.filter(r=>r.respDays!==null);
+  const avgResp = responded.reduce((a,r)=>a+r.respDays,0)/responded.length;
+
+  const recentNeg = REVIEWS.filter(r=>r.date>="2026-04-01" && (r.sentiment==="neg"||r.sentiment==="mixed"));
+  const recentCat = {};
+  ISSUE_CATS.forEach(c=>recentCat[c]=0);
+  recentNeg.forEach(r=>r.cats.forEach(c=>{ if(recentCat.hasOwnProperty(c)) recentCat[c]++; }));
+
+  return {total,pos,neg,mixed,trend,catCounts,negOrMixedTotal:negOrMixed.length,posCatCounts,posTotal:posReviews.length,
+           responseRate:responded.length/total*100,avgResp,recentNeg,recentCat,recentTotal:recentNeg.length};
+}
+
+const STATS = computeStats();
+
+/* ---------- render stat chips ---------- */
+function renderChips(){
+  const s = STATS;
+  const chips = [
+    {num:s.total, label:"Play Store reviews analysed, Dec 2025 – Jun 2026", cls:""},
+    {num:Math.round((s.neg+s.mixed)/s.total*100)+"%", label:"negative overall — up from ~39% through March (Dec–Mar) to ~63% since April", cls:"alert"},
+    {num:Math.round(s.catCounts.SUPPORT/s.negOrMixedTotal*100)+"%", label:"of negative reviews cite support response — more than delivery delay itself", cls:"alert"},
+    {num:Math.round(s.responseRate)+"%", label:"get a public reply, in a median of 1 day — mostly a template pointing to email", cls:"good"},
+  ];
+  document.getElementById("statChips").innerHTML = chips.map(c=>`
+    <div class="chip"><span class="num ${c.cls}">${c.num}</span><span class="label">${c.label}</span></div>
+  `).join("");
+}
+
+/* ---------- render thread trend chart ---------- */
+function renderThreadChart(){
+  const trend = STATS.trend;
+  const W=940,H=260,padL=40,padR=20,padT=20,padB=36;
+  const plotW = W-padL-padR, plotH = H-padT-padB;
+  const maxPct = 80;
+  const stepX = plotW/(trend.length-1);
+  const svg = document.getElementById("threadChart");
+
+  const pts = trend.map((d,i)=>{
+    const x = padL + i*stepX;
+    const y = padT + plotH - (d.negPct/maxPct)*plotH;
+    return {x,y,d};
+  });
+
+  let gridLines = "";
+  [0,20,40,60,80].forEach(v=>{
+    const y = padT + plotH - (v/maxPct)*plotH;
+    gridLines += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="var(--ink-softer)" stroke-width="1"/>`;
+    gridLines += `<text x="${padL-10}" y="${y+4}" text-anchor="end" font-family="IBM Plex Mono" font-size="10" fill="var(--thread)">${v}%</text>`;
+  });
+
+  let pathD = "M " + pts.map(p=>`${p.x} ${p.y}`).join(" L ");
+
+  let dots = "", labels = "";
+  pts.forEach((p,i)=>{
+    const isRecent = i>=4; // Apr onward
+    const color = isRecent ? "var(--madder-light)" : "var(--peacock-light)";
+    dots += `<circle cx="${p.x}" cy="${p.y}" r="5.5" fill="${color}" stroke="var(--ink)" stroke-width="2" class="hoverdot" data-i="${i}" style="cursor:pointer;"/>`;
+    labels += `<text x="${p.x}" y="${H-10}" text-anchor="middle" font-family="IBM Plex Mono" font-size="10.5" fill="var(--thread-light)">${p.d.label}</text>`;
+  });
+
+  // segment path into baseline (peacock) vs recent (madder) for color shift
+  const splitIdx = 4; // April is index 4 (Dec,Jan,Feb,Mar,Apr,May,Jun)
+  const basePts = pts.slice(0, splitIdx+1);
+  const recentPts = pts.slice(splitIdx);
+  const basePath = "M " + basePts.map(p=>`${p.x} ${p.y}`).join(" L ");
+  const recentPath = "M " + recentPts.map(p=>`${p.x} ${p.y}`).join(" L ");
+
+  svg.innerHTML = `
+    ${gridLines}
+    <path d="${basePath}" fill="none" stroke="var(--peacock-light)" stroke-width="2.5" stroke-dasharray="1 5" stroke-linecap="round"/>
+    <path d="${recentPath}" fill="none" stroke="var(--madder-light)" stroke-width="2.5" stroke-dasharray="1 5" stroke-linecap="round"/>
+    ${dots}
+    ${labels}
+    <line x1="${pts[splitIdx].x}" y1="${padT}" x2="${pts[splitIdx].x}" y2="${padT+plotH}" stroke="var(--marigold)" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+    <text x="${pts[splitIdx].x}" y="${padT-6}" text-anchor="middle" font-family="IBM Plex Mono" font-size="9.5" fill="var(--marigold)">INFLECTION</text>
+  `;
+
+  const tooltip = document.getElementById("chartTooltip");
+  svg.querySelectorAll(".hoverdot").forEach(dot=>{
+    dot.addEventListener("mousemove", (e)=>{
+      const i = +dot.getAttribute("data-i");
+      const d = trend[i];
+      tooltip.innerHTML = `<b>${d.label}</b><br>${Math.round(d.negPct)}% negative &middot; ${d.neg+ (d.mixed||0)}/${d.total} reviews`;
+      const rect = svg.getBoundingClientRect();
+      const holder = svg.parentElement.getBoundingClientRect();
+      const scale = rect.width / W;
+      tooltip.style.left = (parseFloat(dot.getAttribute("cx"))*scale) + "px";
+      tooltip.style.top = (parseFloat(dot.getAttribute("cy"))*scale - 54) + "px";
+      tooltip.style.opacity = 1;
+    });
+    dot.addEventListener("mouseleave", ()=>{ tooltip.style.opacity = 0; });
+  });
+}
+
+/* ---------- render pareto bars ---------- */
+function renderPareto(containerId, catCounts, total, catList){
+  const sorted = catList.slice().sort((a,b)=>catCounts[b]-catCounts[a]).filter(c=>catCounts[c]>0);
+  const maxCount = Math.max(...sorted.map(c=>catCounts[c]));
+  const html = sorted.map(c=>{
+    const count = catCounts[c];
+    const pct = Math.round(count/total*100);
+    const widthPct = Math.round(count/maxCount*100);
+    return `
+      <div class="pareto-row">
+        <div class="pareto-label-row">
+          <span class="cat-name">${CAT_META[c].label}</span>
+          <span class="cat-pct">${count} · ${pct}%</span>
+        </div>
+        <div class="pareto-track"><div class="pareto-fill" style="width:${widthPct}%; background:${CAT_META[c].color};"></div></div>
+      </div>`;
+  }).join("");
+  document.getElementById(containerId).innerHTML = html;
+}
+
+/* ---------- render Apr-Jun tie rows ---------- */
+function renderTieRows(){
+  const s = STATS;
+  const top = ISSUE_CATS.slice().sort((a,b)=>s.recentCat[b]-s.recentCat[a]).slice(0,4);
+  const html = top.map(c=>{
+    const pct = Math.round(s.recentCat[c]/s.recentTotal*100);
+    return `<div class="tie-row">
+      <span class="tie-label">${CAT_META[c].label}</span>
+      <div class="tie-bar-outer"><div class="tie-bar-inner" style="width:${pct}%;background:${CAT_META[c].color};"></div></div>
+      <span class="tie-pct">${pct}%</span>
+    </div>`;
+  }).join("");
+  document.getElementById("tieRows").innerHTML = html;
+}
+
+/* ---------- Voice of Customer ---------- */
+let activeFilter = "ALL";
+function renderFilters(){
+  const allCats = ["ALL", ...ISSUE_CATS, ...POS_CATS.filter(c=>c!=="POS_GENERAL")];
+  const seen = new Set();
+  const chips = ["ALL"].concat(ISSUE_CATS.filter(c=>STATS.catCounts[c]>0)).concat(["POS_QUALITY","POS_UX"]);
+  document.getElementById("filterRow").innerHTML = chips.map(c=>{
+    const label = c==="ALL" ? "All 98" : CAT_META[c].label;
+    return `<button class="filter-chip ${c===activeFilter?'active':''}" data-cat="${c}">${label}</button>`;
+  }).join("");
+  document.querySelectorAll(".filter-chip").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      activeFilter = btn.getAttribute("data-cat");
+      renderFilters();
+      renderVocList();
+    });
+  });
+}
+
+function renderVocList(){
+  let list = REVIEWS.slice();
+  if(activeFilter !== "ALL"){
+    list = list.filter(r=>r.cats.includes(activeFilter));
+  }
+  list.sort((a,b)=> b.helpful-a.helpful || (b.date > a.date ? 1 : -1));
+  document.getElementById("vocCount").textContent = `Showing ${list.length} of 98 reviews`;
+  document.getElementById("vocList").innerHTML = list.map(r=>{
+    const color = r.sentiment==="pos" ? "var(--peacock-light)" : (r.sentiment==="mixed" ? "var(--marigold)" : "var(--madder-light)");
+    const dateFmt = new Date(r.date+"T00:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"});
+    const tags = r.cats.map(c=>`<span class="voc-tag">${CAT_META[c] ? CAT_META[c].label : c}</span>`).join("");
+    return `
+      <div class="voc-card">
+        <span class="voc-sentiment" style="background:${color};"></span>
+        <div class="voc-body">
+          <div class="voc-top">
+            <div><span class="voc-name">${r.name}</span><span class="voc-date">${dateFmt}</span></div>
+            ${r.helpful>0 ? `<span class="voc-helpful">▲ ${r.helpful} found helpful</span>` : ""}
+          </div>
+          <div class="voc-note">${r.note}</div>
+          <div class="voc-tags">${tags}</div>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+/* ---------- Recommendations ---------- */
+const RECS = [
+  {
+    title:"Alert customers before they have to chase you",
+    impact:"High", effort:"Medium",
+    evidence:`<b>Delivery delay</b> appears in 39.6% of all negative reviews, and ties for the top issue (50%) in the Apr–Jun window. Nearly every one of these reviewers says they only got a real answer after repeatedly calling or emailing.`,
+    action:"Trigger an automatic SMS/WhatsApp/email the moment a shipment SLA is missed — before the customer has to ask. This alone won't fix logistics, but it removes the specific pattern that shows up again and again: silence, then a template apology only after a public review."
+  },
+  {
+    title:"Fix or retire the paid expedited-delivery option",
+    impact:"High", effort:"Medium",
+    evidence:`At least three reviewers (Aravinda Das, Harsha Chilakalapudi, Sushma D.k) paid extra for 1–2 day delivery and waited 7–11+ days — one calling it a broken promise outright.`,
+    action:"Either reserve genuinely ready-to-ship SKUs for the expedited tier and enforce the SLA, or stop charging for it until fulfillment can back it up. Charging for a service not delivered is a trust and revenue-integrity issue, not just a CX one."
+  },
+  {
+    title:"Give support a resolution path, not just a reply",
+    impact:"High", effort:"Medium-High",
+    evidence:`<b>Support responsiveness</b> is the single most common complaint co-factor — 41.7% of negative reviews overall, tied at 50% with delivery in the last quarter. Response rate on Play Store itself is 98%, but nearly every reply redirects to one inbox, which several reviewers say goes unanswered.`,
+    action:"Add a live chat or WhatsApp Business line with a committed SLA (first response &lt;24h) for time-sensitive cases — delay, refund, wrong item — separate from the general inbox. The public reply habit is good practice; it just needs a real resolution loop behind it."
+  },
+  {
+    title:"Add a pre-dispatch QC checklist",
+    impact:"Medium-High", effort:"Low-Medium",
+    evidence:`Wrong prints, wrong price-tier substitutions, and one case of foreign objects packed alongside the product appear in 10.4% of negative reviews — lower frequency, but high damage per incident and hard to explain away.`,
+    action:"A simple photo-checklist step before dispatch, especially for print-specific or multi-SKU orders, catches this before it becomes a review instead of after."
+  },
+  {
+    title:"Make cancellation self-serve",
+    impact:"Medium", effort:"Low",
+    evidence:`One reviewer explicitly flagged the asymmetry — instant checkout, email-only cancellation — by name, and referenced filing a consumer forum complaint.`,
+    action:"A one-click, in-app cancellation window before dispatch is a low-effort build that removes a specific, named reputational and compliance exposure — Indian regulators have increasingly scrutinised exactly this pattern of dark pattern in e-commerce checkout flows."
+  }
+];
+
+function renderRecs(){
+  document.getElementById("recList").innerHTML = RECS.map((r,i)=>{
+    const impactClass = r.impact.startsWith("High") ? "tag-impact-high" : "tag-impact-med";
+    const effortClass = r.effort.startsWith("Low") ? "tag-effort-low" : "tag-effort-med";
+    return `
+    <div class="rec-card">
+      <div class="rec-num">${String(i+1).padStart(2,"0")}</div>
+      <div>
+        <div class="rec-head">
+          <span class="rec-title">${r.title}</span>
+          <div class="rec-tags">
+            <span class="tag-pill ${impactClass}">Impact: ${r.impact}</span>
+            <span class="tag-pill ${effortClass}">Effort: ${r.effort}</span>
+          </div>
+        </div>
+        <div class="rec-evidence">${r.evidence}</div>
+        <div class="rec-action">${r.action}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("panel-"+btn.getAttribute("data-tab")).classList.add("active");
+  });
+});
+
+/* ---------- init ---------- */
+renderChips();
+renderThreadChart();
+renderPareto("paretoIssues", STATS.catCounts, STATS.negOrMixedTotal, ISSUE_CATS);
+renderPareto("paretoPositive", STATS.posCatCounts, STATS.posTotal, POS_CATS);
+renderTieRows();
+renderFilters();
+renderVocList();
+renderRecs();
+window.addEventListener("resize", renderThreadChart);
+</script>
+</body>
+</html>
